@@ -40,7 +40,8 @@
 	</section>
 </body>
 <script src="https://threejs.org/build/three.min.js"></script>
-<script src="../gaze-event/index.js"></script>
+<script src="index.js"></script>
+<script src="OrbitControls.js"></script>
 <script>
 	/**
 ** author:YoneChen
@@ -52,8 +53,10 @@ class Page {
 		this.scene = new THREE.Scene();
 		// 初始化相机
 		this.camera = new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,1000);
+		this.camera.position.set(20,20,20);
+		this.camera.lookAt(this.scene.position);
 		this.scene.add(this.camera);
-
+ 
 		// 初始化渲染器
 		this.renderer = new THREE.WebGLRenderer({ antialias: true } );
 		this.renderer.setSize(window.innerWidth,window.innerHeight);
@@ -61,7 +64,7 @@ class Page {
 		this.renderer.shadowMapEnabled = true;
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		document.querySelector('.main-page').appendChild(this.renderer.domElement);
-
+        this.control = new THREE.OrbitControls(this.camera, this.renderer.domElement);
 		this.clock = new THREE.Clock();
 		// VR初始化
 		this.initVR();
@@ -95,11 +98,13 @@ class Page {
 			scene.add(cube);
             // add eventlistener for each cube
 			this.gazeEvent.watch(cube,() => {
-                // gazeEnter emit
-				cube.material.opacity = 0.5;
+				// gazeEnter emit
+				var color = new THREE.Color( 0xff0000 );
+				cube.material.color = color;
 			},() => {
                 // gazeExit emit
-				cube.material.opacity = 1;
+				var color = new THREE.Color( 0x0000ff );
+				cube.material.color = color;
 			});
 
 		}
